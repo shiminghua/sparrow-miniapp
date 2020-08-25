@@ -1,0 +1,7 @@
+{
+  "gitbook": ">=2.0.0",
+  "description": "项目说明文档",
+  "structure" : {
+      "readme" : "README-book.md"
+  }
+}
