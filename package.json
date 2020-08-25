@@ -1,0 +1,12 @@
+{
+  "name": "sparrow-miniapp",
+  "version": "1.0.0",
+  "description": "前端小程序开发架构探索",
+  "main": "index.js",
+  "repository": "https://github.com/shiminghua/sparrow-miniapp.git",
+  "author": "shiminghua <shiminghua2008@qq.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
+  }
+}
