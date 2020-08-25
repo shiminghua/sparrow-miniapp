@@ -1,10 +1,6 @@
-# sparrow-miniapp
+# 安装说明
 
-小程序微前端框架
-
-## 安装使用
-
-安装Gitbook
+安装Gitbook时碰到的坑。Gitbook对node版本有要求，需要使用特定版本号。
 
 ```javascript
 // 执行如下命令安装Gitbook工具
