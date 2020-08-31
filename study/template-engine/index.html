@@ -1,0 +1,22 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie-edge">
+  <title>tamplate engine</title>
+  <script src="assets/simple.js"></script>
+</head>
+
+<body>
+  <div id="result"></div>
+
+  <script>
+    let data = { user: { name: '名字' }, info: { address: { city: '漳州' } } };
+    let temp = simple('<p>用户：{{user.name}}，地址：{{info.address.city}}</p>', data);
+    document.getElementById('result').innerHTML = temp;
+  </script>
+</body>
+
+</html>

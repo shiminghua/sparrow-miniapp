@@ -1,0 +1,104 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id="demo-button" type="button" data-tw-bind="text"></button>
+  <!-- <script src="js/app.js"></script> -->
+
+  <script>
+    function Model() {
+      let that = this;
+      let text = 'hello';
+      this.listeners = [];
+
+      Object.defineProperty(that, 'text', {
+        get: function () {
+          return text;
+        },
+        set: function (value) {
+          text = value;
+          that.notify();
+        },
+      });
+    }
+
+    Model.prototype.subscribe = function (listener) {
+      console.log('listener: ', listener);
+      this.listeners.push(listener);
+    };
+
+    Model.prototype.notify = function (value) {
+      let that = this;
+      
+      this.listeners.forEach(function (listener) {
+        console.log('listener value: ', listener, value);
+        listener.call(that, value);
+      });
+    };
+
+    function Controller(model) {
+      let that = this;
+      this.model = model;
+      this.handleEvent = function (e) {
+        e.stopPropagation();
+        switch (e.type) {
+          case 'click':
+            that.clickHandler(e.target);
+            break;
+          default:
+            console.log(e.target);
+            break;
+        }
+      };
+
+      this.getModelByKey = function (key) {
+        return that.model[key];
+      };
+
+      this.clickHandler = function (target) {
+        that.model.text = 'world';
+      };
+    }
+
+    function View(controller) {
+      let that = this;
+      this.controller = controller;
+      let elements = document.querySelectorAll('[data-tw-bind]');
+
+      elements.forEach((element) => {
+        if (element.type === 'button') {
+          element.innerText = controller.getModelByKey('text');
+          that.call = function (data) {
+            console.log('data: ', data);
+            element.innerText = data.text;
+          };
+          element.addEventListener('click', controller);
+        }
+      });
+
+      this.controller.model.subscribe(this);
+    }
+
+    function main() {
+      var model = new Model();
+      var controller = new Controller(model);
+      var view = new View(controller);
+      // model.text = 'aaaaa';
+      setTimeout(function () {
+        model.text = '3s';
+      }, 3000);
+    }
+
+    main();
+  </script>
+
+</body>
+
+</html>

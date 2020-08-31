@@ -1,0 +1,66 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id="demo-button"></button>
+  <!-- <script src="js/app.js"></script> -->
+
+  <script>
+
+    function Model() {
+      this.text = 'hello';
+    }
+
+    function Controller(model) {
+      let that = this;
+      this.model = model;
+
+      this.handleEvent = function (e) {
+        e.stopPropagation();
+
+        switch (e.type) {
+          case 'click':
+            that.clickHandler(e.target);
+            break;
+          default:
+            console.log(e.target);
+            break;
+        }
+      };
+
+      this.getModelByKey = function (modelKey) {
+        return that.model[modelKey];
+      };
+
+      this.clickHandler = function (target) {
+        that.model.text = 'world';
+        target.innerText = that.getModelByKey('text');
+      };
+    }
+
+    function View(controller) {
+      this.controller = controller;
+      this.demoButton = document.getElementById('demo-button');
+      this.demoButton.innerText = controller.getModelByKey('text');
+      this.demoButton.addEventListener('click', controller);
+    }
+
+    function main() {
+      let model = new Model();
+      let controller = new Controller(model);
+      let view = new View(controller);
+    }
+
+    main();
+
+  </script>
+</body>
+
+</html>
