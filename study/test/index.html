@@ -1,0 +1,25 @@
+<html>
+
+<head></head>
+
+<body>
+  <script src="./userinfo.js"></script>
+
+  <script>
+    function a() {
+      if (this instanceof a) {
+        this.a1 = 1;
+      } else {
+        return new a();
+      }
+    }
+
+    let a1 = a();
+    // let a2 = new a();
+
+    console.log(a1);
+    // console.log(a2);
+  </script>
+</body>
+
+</html>

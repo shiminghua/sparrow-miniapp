@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>状态模式</title>
+</head>
+
+<body>
+  <button id='button1'>投入一元钱</button>
+  <button id='button2'>退回一元钱</button>
+  <button id='button3'>转动曲柄</button>
+  <button id='button4'>添加5个糖果</button>
+
+  <button id='button5'>投钱并转动曲柄</button>
+
+  <div id='msg'></div>
+
+  <script>
+
+    const msg = document.getElementById('msg');
+
+    // 状态类，模拟抽象类
+    class State {
+
+      // 动作执行对象，糖果机类
+      context = null;
+
+      constructor(context) {
+        this.context = context;
+      }
+
+      // 放入一元钱
+      insertADollar() {
+        throw new Error('父类的 insertADollar 方法必须被重写！');
+      }
+
+      // 退回一元钱
+      returnADollar() {
+        throw new Error('父类的 returnADollar 方法必须被重写！');
+      }
+
+      // 转动曲柄
+      turnTheCrank() {
+        throw new Error('父类的 turnTheCrank 方法必须被重写！');
+      }
+
+      // 是否售罄
+      soldOut() {
+        throw new Error('父类的 soldOut 方法必须被重写！');
+      }
+    }
+
+    // 没有一元钱的状态
+    class NoMoneyState extends State {
+      type = '没有一元钱';
+      // 放入一元钱
+      insertADollar() {
+        // throw new Error('父类的 insertADollar 方法必须被重写！');
+        console.log('======> 放入一元钱');
+        this.context.setState(this.context.haveMoney);
+      }
+
+      // 退回一元钱
+      returnADollar() {
+        // throw new Error('父类的 returnADollar 方法必须被重写！');
+        console.error('======> 没有一元钱，无法退回。');
+        // this.context.setState(this.context.noMoney);
+      }
+
+      // 转动曲柄
+      turnTheCrank() {
+        // throw new Error('父类的 turnTheCrank 方法必须被重写！');
+        console.error('======> 请先投入一元钱');
+        // this.context.setState(this.context.SoldState);
+      }
+
+      // 发放糖果，是否售罄
+      handOutCandy() {
+        // throw new Error('父类的 soldOut 方法必须被重写！');
+        console.error('======> 越界了，请先投入一元钱');
+        // if (this.context.num <= 0) {
+        //   this.context.setState(this.context.SoldOutState);
+        // } else {
+        //   this.context.setCandyNum(this.context.num - 1);
+        //   this.context.setState(this.context.noMoney);
+        // }
+      }
+
+    }
+
+    // 有一元钱的状态
+    class HaveMoneyState extends State {
+      type = '有一元钱';
+      // 放入一元钱
+      insertADollar() {
+        // throw new Error('父类的 insertADollar 方法必须被重写！');
+        console.error('======> 已经有一元钱，无法重复投入一元钱。');
+        // this.context.setState(this.context.haveMoney);
+      }
+
+      // 退回一元钱
+      returnADollar() {
+        // throw new Error('父类的 returnADollar 方法必须被重写！');
+        console.log('======> 退回一元钱');
+        this.context.setState(this.context.noMoney);
+      }
+
+      // 转动曲柄
+      turnTheCrank() {
+        // throw new Error('父类的 turnTheCrank 方法必须被重写！');
+        console.log('======> 转动曲柄');
+        this.context.setState(this.context.sold);
+      }
+
+      // 发放糖果，是否售罄
+      handOutCandy() {
+        // throw new Error('父类的 soldOut 方法必须被重写！');
+        console.error('======> 越界了，请先转动曲柄');
+        // if (this.context.num <= 0) {
+        //   this.context.setState(this.context.SoldOutState);
+        // } else {
+        //   this.context.setCandyNum(this.context.num - 1);
+        //   this.context.setState(this.context.noMoney);
+        // }
+      }
+
+    }
+
+    // 售出糖果的状态
+    class SoldState extends State {
+      type = '正在售出糖果';
+      // 放入一元钱
+      insertADollar() {
+        // throw new Error('父类的 insertADollar 方法必须被重写！');
+        console.error('======> 正在售出糖果，无法投入一元钱。');
+        // this.context.setState(this.context.haveMoney);
+      }
+
+      // 退回一元钱
+      returnADollar() {
+        // throw new Error('父类的 returnADollar 方法必须被重写！');
+        console.error('======> 正在售出糖果，无法退回一元钱。');
+        // this.context.setState(this.context.noMoney);
+      }
+
+      // 转动曲柄
+      turnTheCrank() {
+        // throw new Error('父类的 turnTheCrank 方法必须被重写！');
+        console.error('======> 正在售出糖果，无法转动手柄。');
+        // this.context.setState(this.context.SoldOutState);
+      }
+
+      // 发放糖果，是否售罄
+      handOutCandy() {
+        // throw new Error('父类的 soldOut 方法必须被重写！');
+        console.log('======> 正在发放糖果');
+        // 发放糖果
+        this.context.setCandyNum(this.context.num - 1);
+        if (this.context.num >= 1) {
+          this.context.setState(this.context.noMoney);
+        } else {
+          this.context.setState(this.context.soldOut);
+        }
+      }
+
+    }
+
+    // 售罄状态
+    class SoldOutState extends State {
+      type = '售罄';
+      // 放入一元钱
+      insertADollar() {
+        console.error('======> 已售罄');
+        // this.context.setState(this.context.noMoney);
+      }
+
+      // 退回一元钱
+      returnADollar() {
+        // throw new Error('父类的 returnADollar 方法必须被重写！');
+        console.error('======> 已售罄');
+        // this.context.setState(this.context.noMoney);
+      }
+
+      // 转动曲柄
+      turnTheCrank() {
+        // throw new Error('父类的 turnTheCrank 方法必须被重写！');
+        console.error('======> 已售罄');
+        // this.context.setState(this.context.noMoney);
+      }
+
+      // 发放糖果，是否售罄
+      handOutCandy() {
+        // throw new Error('父类的 soldOut 方法必须被重写！');
+        console.error('======> 已售罄');
+        // this.context.setState(this.context.noMoney);
+      }
+
+    }
+
+
+    // 糖果机类
+    class CandyMachine {
+
+      // 状态
+      haveMoney = new HaveMoneyState(this);
+      noMoney = new NoMoneyState(this);
+      sold = new SoldState(this);
+      soldOut = new SoldOutState(this);
+      // 糖果数量
+      num = 0;
+      state;
+
+      constructor(num) {
+        this.num = num;
+        this.state = this.noMoney;
+      }
+
+      // 初始化？
+      init() {
+        this.num = 0;
+        this.state = this.noMoney;
+      }
+
+      // 设置糖果数量
+      setCandyNum(num) {
+        this.num = num;
+      }
+
+      // 设置状态
+      setState(state) {
+        this.state = state;
+      }
+
+      // 输出当前状态
+      consoleMessage() {
+        console.log('当前状态：');
+        console.log(this.state);
+        console.log('剩余糖果数量：' + this.num);
+
+        msg.innerText = `
+        当前状态：${this.state.type} 
+        剩余数量：${this.num}
+        `;
+      }
+
+      // 放入一元钱
+      insertADollar() {
+        this.state.insertADollar();
+      }
+
+      // 退回一元钱
+      returnADollar() {
+        // throw new Error('父类的 returnADollar 方法必须被重写！');
+        this.state.returnADollar();
+      }
+
+      // 转动曲柄
+      turnTheCrank() {
+        // throw new Error('父类的 turnTheCrank 方法必须被重写！');
+        this.state.turnTheCrank();
+        this.handOutCandy();
+      }
+
+      // 发放糖果，是否售罄
+      handOutCandy() {
+        // throw new Error('父类的 soldOut 方法必须被重写！');
+        // console.error('======> 已售罄');
+        this.state.handOutCandy();
+      }
+
+    }
+
+    function main() {
+      const candyMachine = new CandyMachine(5);
+
+      candyMachine.consoleMessage();
+      // candyMachine.insertADollar();
+      // candyMachine.consoleMessage();
+      // candyMachine.turnTheCrank();
+      // candyMachine.consoleMessage();
+      // candyMachine.handOutCandy();
+      // candyMachine.consoleMessage();
+
+    }
+
+    // main();
+
+    const candyMachine = new CandyMachine(5);
+
+    candyMachine.consoleMessage();
+
+    // 投入一元钱
+    document.getElementById('button1').addEventListener('click', () => {
+      candyMachine.insertADollar();
+      candyMachine.consoleMessage();
+    });
+
+    // 退回一元钱
+    document.getElementById('button2').addEventListener('click', () => {
+      candyMachine.returnADollar();
+      candyMachine.consoleMessage();
+    });
+
+    // 转动曲柄
+    document.getElementById('button3').addEventListener('click', () => {
+      candyMachine.turnTheCrank();
+      candyMachine.consoleMessage();
+    });
+
+    // 添加5糖果
+    document.getElementById('button4').addEventListener('click', () => {
+      candyMachine.init(5);
+      candyMachine.setCandyNum(5);
+      candyMachine.consoleMessage();
+    });
+
+    // 投钱并转动曲柄
+    document.getElementById('button5').addEventListener('click', () => {
+      candyMachine.insertADollar();
+      candyMachine.turnTheCrank();
+      candyMachine.consoleMessage();
+    });
+
+  </script>
+</body>
+
+</html>
