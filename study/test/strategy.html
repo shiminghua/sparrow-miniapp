@@ -1,0 +1,169 @@
+<html>
+
+<head></head>
+
+<body>
+
+  <ul id='list'>
+    <!-- <li>brand</li>
+    <li>shop</li>
+    <li>product</li>
+    <li>flashsalee</li>
+    <li>other</li> -->
+  </ul>
+
+  <script>
+
+    // 策略
+    class Strategy {
+      showMsg() {
+        throw new Error('子类必须要重写此方法！');
+      }
+    }
+
+    class Brand extends Strategy {
+      constructor(context) {
+        this._context = context;
+      }
+      showMsg() {
+        console.log('===> brand');
+      }
+    }
+
+    class Shop extends Strategy {
+      showMsg() {
+        console.log('===> shop');
+      }
+    }
+
+    class Product extends Strategy {
+      showMsg() {
+        console.log('===> product');
+      }
+    }
+
+    class FlashSale extends Strategy {
+      showMsg() {
+        console.log('===> flash sale');
+      }
+    }
+
+    class Other extends Strategy {
+      showMsg() {
+        console.log('===> other');
+      }
+    }
+
+    class ProductList extends Strategy {
+      showMsg() {
+        console.log('===> product list');
+      }
+    }
+
+    // javascript 方式实现
+    let strategyObject = {
+      brand() {
+        console.log('---> brand');
+      },
+      shop() {
+        console.log('---> shop');
+      },
+      product() {
+        console.log('---> product');
+      },
+      productlist() {
+        console.log('---> product list');
+      },
+      flashsale() {
+        console.log('---> flash sale');
+      },
+      other() {
+        console.log('---> other');
+      },
+    };
+
+    // 工厂模式创建策略对象
+    class FactoryStrategy {
+      createStrategy(type) {
+        switch (type) {
+          case 'brand':
+            return new Brand();
+          case 'shop':
+            return new Shop();
+          case 'product':
+            return new Product();
+          case 'flashsale':
+            return new FlashSale();
+          case 'productlist':
+            return new ProductList();
+          case 'other':
+            return new Other();
+          default:
+            return new Other();
+        }
+      }
+    }
+
+    // 策略模式响应每一项的点击事件
+    class SelectorModel {
+      _strategy;
+
+      constructor(strategy) {
+        this._strategy = strategy;
+      }
+
+      setStrategy(strategy) {
+        this._strategy = strategy;
+      }
+
+      showSelectorMsg() {
+        this._strategy.showMsg();
+      }
+
+    }
+
+    // 根据输入渲染UI
+    let list = ['brand', 'shop', 'product', 'productlist', 'other'];
+
+    class RenderDom {
+      _list = document.getElementById('list');
+
+      render(list) {
+        for (let i = 0, len = list.length; i < len; i++) {
+          let _li = document.createElement('li');
+          _li.innerHTML = list[i];
+          _li.dataset.index = i;
+          this._list.appendChild(_li);
+        }
+      }
+
+      // 绑定事件
+      bindEvent() {
+        this._list.addEventListener('click', (e) => {
+          let index = parseInt(e.target.dataset.index, 10);
+
+          // 面向对象方式
+          let selectorModel = new SelectorModel();
+          let factoryStrategy = new FactoryStrategy();
+          selectorModel.setStrategy(factoryStrategy.createStrategy(list[index]));
+          selectorModel.showSelectorMsg();
+
+          // js 方式
+          // strategyObject[list[index]]();
+          
+        }, false);
+      }
+    }
+
+    function start() {
+      let renderDomm = new RenderDom();
+      renderDomm.render(list);
+      renderDomm.bindEvent();
+    }
+
+    start();
+
+  </script>
+</body>
+
+</html>
